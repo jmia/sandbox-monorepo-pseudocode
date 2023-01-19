@@ -2,6 +2,8 @@
 
 You're a cheeky devil, aren't you? Well, here's how we might structure it.
 
+Based around the [`single-spa` docs on cross-microfrontend imports](https://single-spa.js.org/docs/recommended-setup#cross-microfrontend-imports).
+
 ## root
 
 There's a `package.json` with test dependencies and scripts that can run all applications at once or all test suites at once or lint/format all repositories with the same rules. There's an `.env` file for global use. This could also be a good place for a global linter configuration if it can be added.
