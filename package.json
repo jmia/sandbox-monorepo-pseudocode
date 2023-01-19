@@ -1,0 +1,16 @@
+{
+    "scripts": {
+        "run:all": "cd orchestrator && npm run dev && cd ../apps && run-all.sh",
+        "lint": "run lint --recursive",
+        "test": "run test",
+        "test:apps": "run test @apps",
+        "test:form-folders": "run test @form-folders",
+        "test:orchestrator": "run test @orchestrator",
+        "test:shared": "run test @shared"
+    },
+    "devDependencies": {
+        "vue-unit-test-library": "v0.0.0",
+        "vanilla-js-unit-test-library": "v0.0.0",
+        "linter": "v0.0.0"
+    }
+}
