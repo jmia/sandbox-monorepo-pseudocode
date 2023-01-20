@@ -34,7 +34,7 @@ The purpose would be for them to be exported so they could be imported and tree-
 
 ### `/shared/common-api-functions`
 
-If we want to write authentication functions for an app, we might want to use the same function for all apps, so it might make sense to make it shared.
+Instead of common API functions, We could let each app handle their own functions, but some of them (like auth or feature flags) will likely be exactly the same across all apps.
 
 ### `/shared/locales`
 
