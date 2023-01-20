@@ -1,12 +1,12 @@
 # So you wanna build a monorepo.
 
-You're a cheeky devil, aren't you? Well, here's how we might structure it.
+You're a cheeky devil, aren't you? Well, here's how we might structure it. Names given to things are not my suggestions for final names, I wanted to give them bland names.
 
 Based around the [`single-spa` docs on cross-microfrontend imports](https://single-spa.js.org/docs/recommended-setup#cross-microfrontend-imports).
 
 ## root
 
-There's a `package.json` with test dependencies and scripts that can run all applications at once or all test suites at once or lint/format all repositories with the same rules. There's an `.env` file for global use. This could also be a good place for a global linter configuration if it can be added.
+There's a `package.json` with test dependencies and scripts that can run all applications at once or all test suites at once or lint/format all repositories at once (ideally with the same rules). There's an `.env` file for global use. This could also be a good place for a global linter configuration if it can be added.
 
 ## `/apps`
 
@@ -20,11 +20,15 @@ It has its own localization library, but it sources its strings from `shared/loc
 
 It is set up so that it can be registered with `orchestrator` and loaded at the right route.
 
-It has its own dependencies that are independent from the monorepo, like `vue`, and an `http-client` like `axios`, and a localization library like `polyglot`.
+It has its own dependencies that are independent from the monorepo, like `vue`, and an `http-client`, and a localization library.
+
+It has its own test suite that can be run separately or together as part of an all-encompassing `package.json` script.
 
 ## `/orchestrator`
 
 If we moved `orchestrator` into the monorepo, it makes sense it would live at a higher level in the directory structure than the apps. It will still house `topbar` and `sidebar` inside its source code, because refactoring it is out of scope. If we were to move them, `topbar` and `sidebar` should go to the `apps` folder.
+
+It has its own test suite that can be run separately or together as part of an all-encompassing `package.json` script.
 
 ## `/shared`
 
@@ -34,7 +38,7 @@ The purpose would be for them to be exported so they could be imported and tree-
 
 ### `/shared/common-api-functions`
 
-Instead of common API functions, We could let each app handle their own functions, but some of them (like auth or feature flags) will likely be exactly the same across all apps.
+Instead of common API functions, we could let each app handle their own functions, but some of them (like auth or feature flags) will likely be exactly the same across all apps. Might be a good idea to define them together and import/export.
 
 ### `/shared/locales`
 
@@ -42,10 +46,21 @@ This is a collection of strings only, maybe one day an import/export tool. It wi
 
 ### `/shared/shared-component-library`
 
-Ahh, the magic stuff. This library has its own implementation-agnostic components. They will be designed for use with Vue 3 applications, but in theory they could be rewritten in multiple languages and exported under different aliases. These components are extensible enough to have slots and props for all the fun and interesting things you might want them to do. If an application wants a component that's exceptionally pattern-breaking, we would design a new component in the same directory, or host it in the application that will use it. We do not want to do a crap-ton of gymnastics to get the base components to do what we want for 100% of cases. 80% or bust.
+Ahh, the magic stuff. This library has its own implementation-agnostic components, based off of their initial design in `inspections`. They will be designed for use with Vue 3 applications, but in theory they could be rewritten in multiple languages and exported under different aliases. These components are extensible enough to have slots and props for all the fun and interesting things you might want them to do. 
 
-## `/tests`
+If an application wants a component that's exceptionally pattern-breaking, we would design a new component in the same directory, or host it in the application that will use it. We do not want to do a crap-ton of gymnastics to get the base components to do what we want for 100% of cases. 80% or bust.
 
-This is a shared test suite, that can use more than one test runner or testing library to support multiple frameworks. For now, it will support Vue 3 and vanilla JS. 
+It has its own dependencies that are independent from the monorepo, like `vue`, and a UI framework.
 
-Alternatively, these tests can also be broken out into their respective directories with their respective test frameworks set as a dev dependency of that app, but the root `package.json` should still have a script that can run all of them together in one shot.
+It has its own test suite that can be run separately or together as part of an all-encompassing `package.json` script.
+
+## Things that aren't addressed in this mockup
+- How many docker containers or `docker compose` files would this need? One or many?
+- Can or should each application in `/apps` be run, deployed, or published separately? Is this an anti-pattern for monorepos?
+- Where should we store docs? Shared or individual?
+- Is our tooling or architecture constrained by anything because we are still chained to `inspections + nuxt` and `wxPortal`? 
+- Is our tooling or architecture constrained because of `single-spa`? e.g. Docs mainly assume `webpack`, could we still use `vite`? Does it matter?
+- How can we put huge shared dependencies like Vue 3 into one spot instead of multiple? There are suggestions in [the `single-spa` docs](https://single-spa.js.org/docs/recommended-setup/#shared-dependencies) for how to do this.
+- How much CSS has to come over? Can it just be some of what's in `inspections` or does it have to be all of it?
+- There's more. I'll add them as I think of them.
+
