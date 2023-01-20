@@ -20,7 +20,7 @@ It has its own localization library, but it sources its strings from `shared/loc
 
 It is set up so that it can be registered with `orchestrator` and loaded at the right route.
 
-It has its own dependencies that are independent from the monorepo, like `vue`, and an `http-client`, and a localization library.
+It has its own dependencies that are independent from the monorepo, like `vue`, and an `http-client`, and a localization library. Keeping them separate means that if one microapp has to pin a specific version, it won't prevent other apps from bumping versions. If we want to update a dependency for all apps, it only requires one PR. We will be more likely to keep them in sync this way.
 
 It has its own test suite that can be run separately or together as part of an all-encompassing `package.json` script.
 
@@ -30,19 +30,21 @@ If we moved `orchestrator` into the monorepo, it makes sense it would live at a 
 
 It has its own test suite that can be run separately or together as part of an all-encompassing `package.json` script.
 
+Moving `orchestrator` into this repo is a low priority. We should be able to get this to all work the same with or without `orchestrator` as a roommate.
+
 ## `/shared`
 
 This would be where we would put all shared utility proprietary packages like a `shared-component-library`, or any other shared behaviour we might want other repos to import. I don't expect any of this code to be able to run independently, unless we were pursuing a locally runnable style guide-like application for the components. This is out of scope.
 
-The purpose would be for them to be exported so they could be imported and tree-shaken by other apps at build time (I think).
+The purpose would be for them to be exported so they could be imported and tree-shaken by other apps.
 
 ### `/shared/common-api-functions`
 
-Instead of common API functions, we could let each app handle their own functions, but some of them (like auth or feature flags) will likely be exactly the same across all apps. Might be a good idea to define them together and import/export.
+Instead of common API functions, we could let each app handle their own functions, but some of them (like auth or feature flags) will likely be exactly the same across all apps. This would be where those would live. See [`single-spa`'s opinion on this](https://single-spa.js.org/docs/recommended-setup/#utility-modules-styleguide-api-etc).
 
 ### `/shared/locales`
 
-This is a collection of strings only, maybe one day an import/export tool. It will not have a library or wrapper for translation, because we want apps to make that decision in case they have special requirements that aren't covered by the chosen library.
+This is a collection of strings only, maybe one day an import/export tool. It will not have a library or wrapper for translation, because we want apps to make decisions about their own dependencies. This could be discussed again later as a wrapped, exportable library that's shared, but it seems like overkill for most microapps.
 
 ### `/shared/shared-component-library`
 
@@ -53,6 +55,8 @@ If an application wants a component that's exceptionally pattern-breaking, we wo
 It has its own dependencies that are independent from the monorepo, like `vue`, and a UI framework.
 
 It has its own test suite that can be run separately or together as part of an all-encompassing `package.json` script.
+
+This is so that we do not have to rewrite components over and over, and the design team will have one place to maintain and persist improvements. The reason they should be devoid of business logic (presentation logic is OK) is for a separation of concerns between what it should do for all apps (presentation) and what it should do for _this_ app (business).
 
 ## Things that aren't addressed in this mockup
 - How many docker containers or `docker compose` files would this need? One or many?
