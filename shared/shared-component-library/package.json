@@ -1,14 +1,14 @@
 {
     "scripts": {
         "lint": "run lint",
-        "test": "run test",
-        "test:apps": "run test @apps",
-        "test:form-folders": "run test @form-folders",
-        "test:orchestrator": "run test @orchestrator",
-        "test:shared": "run test @shared"
+        "test": "run test"
     },
     "dependencies": {
         "vue": "v0.0.0",
         "vue-ui-library": "v0.0.0"
+    },
+    "devDependencies": {
+        "linter": "v0.0.0",
+        "vue-unit-testing-library": "v0.0.0"
     }
 }

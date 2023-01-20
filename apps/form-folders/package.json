@@ -1,11 +1,16 @@
 {
     "scripts": {
         "dev": "run dev",
-        "lint": "run lint"
+        "lint": "run lint",
+        "test": "run test"
     },
     "dependencies": {
         "vue": "v3.0.0",
         "http-client": "v0.0.0",
         "localization-library": "v0.0.0"
+    },
+    "devDependencies": {
+        "linter": "v0.0.0",
+        "vue-unit-test-library": "v0.0.0"
     }
 }
